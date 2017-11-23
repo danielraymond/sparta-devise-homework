@@ -4,12 +4,17 @@ class GamesController < ApplicationController
   # GET /games
   # GET /games.json
   def index
+
     @games = Game.all
+
   end
 
   # GET /games/1
   # GET /games/1.json
   def show
+    if(@game.user.id != current_user.id)
+      redirect_to games_path
+    end
   end
 
   # GET /games/new
@@ -19,6 +24,9 @@ class GamesController < ApplicationController
 
   # GET /games/1/edit
   def edit
+    if(@game.user.id != current_user.id)
+      redirect_to games_path
+    end
   end
 
   # POST /games
@@ -55,10 +63,15 @@ class GamesController < ApplicationController
   # DELETE /games/1
   # DELETE /games/1.json
   def destroy
-    @game.destroy
-    respond_to do |format|
-      format.html { redirect_to games_url, notice: 'Game was successfully destroyed.' }
-      format.json { head :no_content }
+
+    if(@game.user.id != current_user.id)
+      redirect_to games_path
+    else
+      @game.destroy
+      respond_to do |format|
+        format.html { redirect_to games_url, notice: 'Game was successfully destroyed.' }
+        format.json { head :no_content }
+      end
     end
   end
 
